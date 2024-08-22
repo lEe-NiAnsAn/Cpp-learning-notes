@@ -1045,6 +1045,8 @@ void test325()
 #pragma endregion
 
 #pragma region 常用查找算法
+//1、find
+//查找指定元素，成功则返回指定元素迭代器，否则返回.end()
 
 #pragma endregion
 

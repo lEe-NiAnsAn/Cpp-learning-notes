@@ -17,6 +17,6 @@ C++自学笔记，顺便了解一下GitHub
   >> __还在学，没有写完来着……__
 
 -----
-##### 在哪学的
-* [仔这学的](https://www.bilibili.com/video/BV1et411b73Z?vd_source=17bd8b1bb0b1b1bf9cfe6344678a3319)
-  > ~~嗐嗐嗐~~
+#### 在哪学的
+*** [仔这学的](https://www.bilibili.com/video/BV1et411b73Z?vd_source=17bd8b1bb0b1b1bf9cfe6344678a3319)
+  >>> ~~嗐嗐嗐~~

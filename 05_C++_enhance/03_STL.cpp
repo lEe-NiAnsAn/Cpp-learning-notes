@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 using namespace std;
 #include <vector>
 #include <deque>
@@ -932,7 +932,6 @@ void test322()
 void test323()
 {
 	//equal_to等于、not_equal_to不等于、greater大于、greater_equal大于等于、less小于、less_equal小于等于
-	greater<int> gt1;
 	vector<int> v323;
 	for (int i = 1; i < 7; i++)
 	{
@@ -1045,9 +1044,101 @@ void test325()
 #pragma endregion
 
 #pragma region 常用查找算法
-//1、find
-//查找指定元素，成功则返回指定元素迭代器，否则返回.end()
+class Cfind
+{
+public:
+	Cfind(char c,int i)
+	{
+		this->m_c = c;
+		this->m_i = i;
+	}
+	bool operator==(const Cfind& cf)
+	{
+		if (cf.m_c == this->m_c && cf.m_i == this->m_i)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	char m_c;
+	int m_i;
+};
+class Cfind_if
+{
+public:
+	bool operator()(const Cfind& cf)
+	{
+		return cf.m_i > 5;	//int大于五
+	}
+};
+void test326()
+{
+	//1、find(查找区间首,查找区间末,查找值)
+	//查找指定元素，成功则返回指定元素迭代器，否则返回.end()
+	vector<Cfind> v3261;
+	for (int i = 7; i > 2; i--)
+	{
+		Cfind cf('X', i);
+		v3261.push_back(cf);
+	}
+	Cfind fcf('X',3);
+	//find底层实现需将查找值与区间内数据一一进行直接==判断
+	//通过重载==操作符实现自订类型查找
+	vector<Cfind>::iterator it1 = find(v3261.begin(), v3261.end(), fcf);
+	cout << "find查找自订类型：" << it1->m_c << "   " << it1->m_i << endl;
 
+	//2、find_if(查找区间首,查找区间末,操作函数)
+	//按条件查找指定元素，成功则返回匹配条件首个元素迭代器，否则返回.end()
+	vector<Cfind>::iterator it2 = find_if(v3261.begin(), v3261.end(), Cfind_if());
+	cout << "find_if查找自订类型：" << it2->m_c << "   " << it2->m_i << endl;
+
+	//3、adjacent_find(查找区间首,查找区间末)
+	//查找连续重复数据，成功则返回该数个重复数据的首迭代器，否则返回.end()
+	vector<int> v3263;
+	v3263.push_back(1);
+	v3263.push_back(2);
+	v3263.push_back(1);	//此处"1"虽重复却并不连续，不符合
+	v3263.push_back(3);
+	v3263.push_back(3);	//符合
+	v3263.push_back(4);
+	vector<int>::iterator it3 = adjacent_find(v3263.begin(), v3263.end());
+	cout << "查找连续重复数据：" << *it3 << endl;
+
+	//4、binary_search(查找区间首,查找区间末,查找值)
+	//(binary 二分)查找指定数据，成功返回 true,否则返回 false，在无序序列中使用时失准——>须升/降序结构
+	vector<int> v3264;
+	for (int i = 1; i < 10; i++)
+	{
+		v3264.push_back(i);	//以升序插入数据
+	}
+	bool b3264 = binary_search(v3264.begin(), v3264.end(), 6);
+	b3264 == true ? cout << "成功\n" : cout << "失败\n";
+
+	//5、count(统计区间首,统计区间末,给定值)
+	//统计容器内给定数据的总数
+	vector<Cfind> v3265;
+	for (int i = 7; i > 2; i--)
+	{
+		Cfind cf('X', i);
+		v3265.push_back(cf);
+		if (i == 4) {v3265.push_back(cf);}
+	}
+	Cfind fcf3265('N', 4);
+	cout << "统计自订数据数量：" << count(v3265.begin(), v3265.end(), fcf3265) << endl;	//需重载==操作符
+
+	//6、count_if(统计区间首,统计区间末,操作函数)
+	//按条件统计容器内数据
+	vector<Cfind> v3266;
+	for (int i = 7; i > 3; i--)
+	{
+		Cfind cf('X', i);
+		v3266.push_back(cf);
+	}
+	cout << "自订数据 int值大于5数量：" << count_if(v3266.begin(), v3266.end(), Cfind_if()) << endl;
+}
 #pragma endregion
 
 #pragma endregion
@@ -1081,6 +1172,7 @@ int main()
 	test323();
 	test324();
 	test325();
+	test326();
 
 	system("pause");
 

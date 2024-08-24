@@ -10,6 +10,8 @@ using namespace std;
 #include <string>
 #include <algorithm>	//标准算法头文件
 #include<functional>	//内建函数对象
+#include<numeric>	//小型算法
+#include<ctime>	//时间随机数种子所需
 
 #pragma region STL基本定义
 //STL（Standard Template Library）标准模板库
@@ -1038,7 +1040,7 @@ void test325()
 	vector<int> v02;
 	v02.resize(v01.size());
 	transform(v01.begin(), v01.end(), v02.begin(), Ctransf1());	//遍历赋值并打印输出
-	cout << endl;
+	cout << "\n\n";
 
 }
 #pragma endregion
@@ -1137,16 +1139,173 @@ void test326()
 		Cfind cf('X', i);
 		v3266.push_back(cf);
 	}
-	cout << "自订数据 int值大于5数量：" << count_if(v3266.begin(), v3266.end(), Cfind_if()) << endl;
+	cout << "自订数据 int值大于5数量：" << count_if(v3266.begin(), v3266.end(), Cfind_if()) << "\n\n";
 }
 #pragma endregion
 
+#pragma region 常用排序算法
+void test327()
+{
+	//1、sort(排序区间首,排序区间末,排序方法)
+	//按条件排序容器指定区间内数据，若第三项参数为空则默认升序排序
+	vector<int> v3271;
+	for (int i = 1; i < 6; i++)
+	{
+		v3271.push_back(i);
+	}
+	sort(v3271.begin(), v3271.end(), greater<int>());	//使用函数对象进行降序排列
+	for_each(v3271.begin(), v3271.end(), nprint1);	//打印输出
+	cout << endl;
+
+	//2、random_shuffle(排序区间首,排序区间末)
+	//对指定区间内的数据进行随机打乱
+	vector<int> v3272;
+	for (int i = 15; i > 10; i--)
+	{
+		v3272.push_back(i);
+	}
+	random_shuffle(v3272.begin(), v3272.end());	//未于 main函数中加入随机数种子则为假随机
+	for_each(v3272.begin(), v3272.end(), nprint1);	//打印输出
+	cout << endl;
+
+	//3、merge(甲容器合并区间首,甲容器合并区间末,乙容器合并区间首,乙容器合并区间末,新容器插入位置迭代器,排序方法)
+	//(merge归并)将甲乙两容器指定区间的数据自动排序合并至另新容器的指定位置，且在甲乙新三容器须为同一排序方式——>默认升序
+	vector<int> v3273;
+	sort(v3272.begin(), v3272.end(),greater<int>());
+	v3273.resize(v3271.size() + v3272.size());	//确定新容器的大小
+	merge(v3271.begin(), v3271.end(), v3272.begin(), v3272.end(), v3273.begin(),greater<int>());
+	for_each(v3273.begin(), v3273.end(), nprint1);	//打印输出
+	cout << endl;
+
+	//4、reverse(反转区间首,反转区间末)
+	//反转(首位对调)指定区间内数据
+	reverse(v3273.begin() + 2, v3273.end() - 3);
+	for_each(v3273.begin(), v3273.end(), nprint1);	//打印输出
+	cout << "\n\n";
+
+}
 #pragma endregion
 
+#pragma region 常用拷贝与替换算法
+void test328()
+{
+	//1、copy(源区间首,源区间末,目标位置迭代器)
+	//拷贝指定区间数据至另一容器
+	vector<int> v328;
+	for (int i = 1; i < 6; i++)
+	{
+		v328.push_back(i);
+	}
+	vector<int> v3281;
+	v3281.resize(v328.size());	//指定大小
+	copy(v328.begin(), v328.end(), v3281.begin());
+	for_each(v3281.begin(), v3281.end(), nprint1);	//打印输出
+	cout << endl;
 
+	//2、replace(替换区间首,替换区间末,原数据,新数据)
+	//将指定区间内所有原数据替换为新数据
+	vector<int> v3282;
+	for (int i = 1; i < 6; i++)
+	{
+		v3282.push_back(i);
+		if (i == 4) { v3282.push_back(3); }
+	}
+	replace(v3282.begin(), v3282.end(), 3, 0);
+	for_each(v3282.begin(), v3282.end(), nprint1);	//打印输出
+	cout << endl;
+
+	//3、replace_if(替换区间首,替换区间末,替换条件,新数据)
+	//按条件将指定区间内所有数据替换为新数据
+	vector<int> v3283;
+	for (int i = 9; i > 2; i--)
+	{
+		v3283.push_back(i);
+	}
+	replace_if(v3283.begin(), v3283.end(), Cfive(), 0);	//替换所有大于五的数据
+	for_each(v3283.begin(), v3283.end(), nprint1);	//打印输出
+	cout << endl;
+
+	//4、swap(甲容器,乙容器)
+	//互换甲乙两容器中所有数据
+	swap(v3282, v3283);
+	cout << "\n";
+}
+#pragma endregion
+
+#pragma region 常用算数生成算法
+//该类算法属于小型算法，需包含头文件<numeric>
+void test329()
+{
+	//1、accumulate(计算区间首,计算区间末,起始值)
+	//计算指定区间内所有数据的和，累加至起始值
+	vector<int> v3291;
+	for (int i = 2; i < 16;)
+	{
+		v3291.push_back(i);
+		i = i * 2;
+	}
+	int vsum = accumulate(v3291.begin(), v3291.end(), 0);
+	for_each(v3291.begin(), v3291.end(), nprint1);	//打印输出数据
+	cout << "\n总和为：" << vsum << endl;
+
+	//2、fill(填充区间首,填充区间末,填充值)
+	//向指定区间内填充值
+	vector<int> v3292;
+	v3292.resize(6, 6);
+	fill(v3292.begin() + 1, v3292.end() - 1, 7);	//后期重新填充
+	for_each(v3292.begin(), v3292.end(), nprint1);	//打印输出
+	cout << "\n\n";
+}
+#pragma endregion
+
+#pragma region 常用集合算法
+void test330()
+{
+	vector<int> v1330;
+	vector<int> v2330;
+	for (int i = 6; i > 1; i--)
+	{
+		v1330.push_back(i);
+		v2330.push_back(i + 3);
+		v1330.push_back(i);
+		v2330.push_back(i + 3);
+	}
+	//1、set_intersection(甲容器区间首,甲容器区间末,乙容器区间首,乙容器区间末,新容器目标迭代器,排序条件)
+	//求甲乙两区间的交集并将其返回插入至新容器的指定迭代器，并返回新末尾数据迭代器
+	//三容器须为同序排序——>末参数为空默认升序
+	vector<int> v3301;
+	v3301.resize(min(v1330.size(), v2330.size()));	//交集开辟空间时取较小区间的大小
+	vector<int>::iterator it1 =		//两容器同时拥有重复的相同数据，新容器中依旧重复
+		set_intersection(v1330.begin(), v1330.end(), v2330.begin(), v2330.end(), v3301.begin(),greater<int>());
+	for_each(v3301.begin(), it1, nprint1);	//打印输出
+	cout << endl;
+
+	//2、set_union(甲容器区间首,甲容器区间末,乙容器区间首,乙容器区间末,新容器目标迭代器,排序条件)
+	//求甲乙两区间的并集并将其返回插入至新容器的指定迭代器，并返回新末尾数据迭代器
+	//三容器须为同序排序——>末参数为空默认升序
+	vector<int> v3302;
+	v3302.resize(v1330.size() + v1330.size());	//并集开辟空间时取甲乙两区间和
+	vector<int>::iterator it2 =		//原容器拥有重复的数据，新容器中依旧重复
+		set_union(v1330.begin(), v1330.end(), v2330.begin(), v2330.end(), v3302.begin(), greater<int>());
+	for_each(v3302.begin(), it2, nprint1);	//打印输出
+	cout << endl;
+
+	//3、set_difference(甲容器区间首,甲容器区间末,乙容器区间首,乙容器区间末,新容器目标迭代器,排序条件)
+	//求甲区间对于乙区间的补集(部分甲区间)并将其返回插入至新容器的指定迭代器，并返回新末尾数据迭代器
+	//三容器须为同序排序——>末参数为空默认升序
+	vector<int> v3303;
+	v3303.resize(v1330.size());	//差集开辟空间时取甲区间(首参数区间)的大小
+	vector<int>::iterator it3 =		//甲容器拥有乙容器中未有的重复数据，新容器中依旧重复
+		set_difference(v1330.begin(), v1330.end(), v2330.begin(), v2330.end(), v3303.begin(), greater<int>());
+	for_each(v3303.begin(), it3, nprint1);	//打印输出
+	cout << "\n\n";
+}
+#pragma endregion
+#pragma endregion
 
 int main()
 {
+	srand((unsigned int)time(NULL));	//时间随机数种子
 	test301();
 	test302();
 	test303();
@@ -1173,6 +1332,10 @@ int main()
 	test324();
 	test325();
 	test326();
+	test327();
+	test328();
+	test329();
+	test330();
 
 	system("pause");
 
